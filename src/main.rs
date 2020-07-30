@@ -10,6 +10,8 @@ use rserver::ThreadPool;
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
     let pool = ThreadPool::new(4);
+    
+    let mut cnt = 0;
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
@@ -17,6 +19,10 @@ fn main() {
         pool.execute(|| {
             handle_connection(stream);
         });
+        cnt += 1;
+        if cnt >= 10 {
+            break;
+        }
     }
 }
 
